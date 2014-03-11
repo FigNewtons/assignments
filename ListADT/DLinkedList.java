@@ -126,6 +126,20 @@ class DLinkedList<E extends Comparable<E>> implements List<E>
 		return current.next().element();
 	}
 	
+	public void reverse()
+	{
+		int posHolder = currentPos();
+
+		for(int i = length(); i >= 0 ; i--)
+		{
+			moveToPos(i);
+			E temp = remove();
+			append(temp);
+		}
+
+		moveToPos(posHolder);
+	}
+	
 	public void bubbleSort()
 	{
 		int temp = currentPos();
