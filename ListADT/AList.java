@@ -188,6 +188,16 @@ public class AList<E extends Comparable<E>> implements List<E>
 		return listArray.get(currentPos);
 	}
 
+	public void reverse()
+	{
+		for(int i=0; i < length()/ 2; i++)
+		{
+			E temp = listArray.get(i);
+			listArray.set(i, listArray.get(length() - 1 - i));
+			listArray.set(length() - 1 - i, temp);
+		}
+	}
+	
 	/**
 	 *  Sorts the list using the bubble sort algorithm
 	 * 

@@ -35,6 +35,8 @@ public interface List<E> {
 	public void moveToPos(int pos); // moves to given position in list
 
 	public E getValue(); // returns current value
+	
+	public void reverse(); // reverse the ordering of elements in the list
 
 	public void bubbleSort(); // sorts list using bubble sort algorithm
 
