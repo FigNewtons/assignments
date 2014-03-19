@@ -120,7 +120,7 @@ class LinkedList<E extends Comparable<E>> implements List <E>
 		return current.next().element();
 	}
 	
-	// Done in O(n) time 
+	
 	public void reverse()
 	{	
 		int posHolder = currentPos();
