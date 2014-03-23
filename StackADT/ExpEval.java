@@ -1,4 +1,13 @@
-
+/**
+ * ExpEval.java
+ * 
+ * Daniel Gruszczynski 
+ * ITCS 2214 -- Project 4B
+ *
+ * Converts infix expressions to its postfix form and 
+ * evaluates it (using a linked stack) 
+ *
+ **/
 public class ExpEval 
 {
 	
@@ -6,9 +15,11 @@ public class ExpEval
 	static Stack<Character> opStack = new LinkedStack<Character>(); 
 	static Stack<Float> valStack = new LinkedStack<Float>();
 	
+	// Test values a=5, b=3, c=8, d=20, e=18, f=9, g=12, h=7, k=1  (i and j aren't used)
 	static float[] value = {5,3,8,20,18,9,12,7,0,0,1};
 	
-	// Converts infix expressions to postfix expressions
+	// Given an infix expression, this function returns
+    //  a postfix string 
 	public static String infixToPostfix(String str)
 	{
 		char[] infix = str.toCharArray(); 
@@ -71,16 +82,20 @@ public class ExpEval
 			return 2;
 	}
 	
+	// Returns a floating point evaluation of a postfix expression
 	public static float evaluatePostfix(String str)
 	{
 		char[] postfix = str.toCharArray();
-		for(char op: postfix)
+		for(int i = 0; i < postfix.length; i++)
 		{	
+			char op = postfix[i];
+			
+			// retrieve value from array for given letter
 			if(isOperand(op))
-				valStack.push(value[op - 97]); // 97 is the ascii value of 'a'
+				valStack.push(value[op - 97]); // 97 is the ascii value of 'a' 
 			else
 			{	
-				float op2 = valStack.pop();
+				float op2 = valStack.pop();  // pop off top two values for next operation
 				float op1 = valStack.pop();
 				
 				switch(op)
@@ -103,11 +118,14 @@ public class ExpEval
 		return valStack.pop();
 	}
 	
+	// Test driver
 	public static void main(String[] args) 
 	{
+		// Array of test infix expressions
 		String[] infix = {"a+b-c", "a-b+c", "e*f*g", "e+f/g*h-k", "a*b+c*d-e/f",
 						  "a/b/c/d", "a-b-c/d-e-f*g/h-k", "a+b*c+d/e-f*g+h/k"};
 		
+		// Display output for each infix expression 
 		for(String inStr: infix)
 		{
 			String postfix = infixToPostfix(inStr);
