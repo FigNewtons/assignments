@@ -13,7 +13,7 @@ public class AQueue<E> implements Queue<E>
 	private int maxSize;	// max size of queue
 	private int front; 		// front of queue
 	private int end;		// back of queue
-	private ArrayList<E> list; 
+	private E[] list;
 	
 	public AQueue()
 	{
@@ -26,7 +26,7 @@ public class AQueue<E> implements Queue<E>
 		maxSize = size + 1;  
 		front = 1;
 		end = 0;
-		list = new ArrayList<E>(maxSize);
+		list = (E[]) new Object[maxSize];
 	}
 	
 	public void clear()
@@ -42,14 +42,14 @@ public class AQueue<E> implements Queue<E>
 		// It's plus two because you have to skip the empty slot 
 		assert((end + 2) % maxSize) != front : "The queue is full"; 
 		end = (end + 1) % maxSize;
-		list.set(end, item);
+		list[end] = item;
 	}
 	
 	// Take item from front of list and dereference it
 	public E dequeue()
 	{
 		assert length() != 0: "The queue is empty";
-		E item = list.get(front);
+		E item = list[front];
 		front = (front + 1) % maxSize;
 		return item;
 	}
@@ -58,7 +58,7 @@ public class AQueue<E> implements Queue<E>
 	public E frontValue()
 	{
 		assert length() != 0: "The queue is empty";
-		return list.get(front);
+		return list[front];
 	}
 	
 	// Returns current size of the queue
