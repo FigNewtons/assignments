@@ -22,4 +22,6 @@ public interface Queue<E>
 	public E frontValue(); // Returns item value in front of queue
 	
 	public int length(); // Returns queue length
+	
+	public boolean isEmpty(); // Returns true if queue is empty (length == 0)
 }

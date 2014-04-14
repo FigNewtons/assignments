@@ -67,4 +67,10 @@ public class AQueue<E> implements Queue<E>
 		return ((end + maxSize) - front + 1) % maxSize;
 	}
 	
+	// Returns true if queue is empty
+	public boolean isEmpty()
+	{
+		return length() == 0;
+	}
+	
 }
