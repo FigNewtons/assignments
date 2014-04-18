@@ -245,7 +245,7 @@ public class Graphl implements Graph
 		for(glist.moveToStart(); glist.currentPos() != glist.length(); glist.next())
 		{
 			String s = glist.getValue().vertex();
-			if((int)marked.get(s) == 0)
+			if((int)marked.get(s) == UNVISITED)
 				traverse(s);			
 		}
 		return;
