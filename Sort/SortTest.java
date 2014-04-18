@@ -55,4 +55,12 @@ public class SortTest
 		sort.quickSort(0, temp.length-1);
 		assertEquals(correct, sort.array);
 	}
+	
+	@Test
+	public void heapTest()
+	{
+		Integer[] temp = new Integer[array.length];
+		sort.heapsort(temp);
+		assertEquals(correct, sort.getArray());
+	}
 }

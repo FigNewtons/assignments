@@ -179,4 +179,26 @@ public class Sort<E extends Comparable<E>>
 		return left;
 	}
 	
+	// -------------------------------  Heap Sort ------------------------------
+	// Instead of using a BST-like structure like in quicksort, heapsort
+	// uses the properties of a max heap to efficiently store and remove
+	// the max value (root) after iteration. We use a temp array to make
+	// things cleaner, but it isn't necessary if you choose to implement
+	// it a different way. Heapsort is O(n log n) in the best, average, and
+	// worst case scenarios, but is not as fast as quicksort in the average
+	// case (by a constant factor).
+	public void heapsort(E[] temp)
+	{
+		MaxHeap<E> heap = new MaxHeap<E>(array, len);
+		
+		E[] arr = temp;	
+
+		for(int i=0; i < len; i++){
+			E max = heap.removemax();
+			arr[(len-1) - i] = max;	
+		}
+		
+		System.arraycopy(arr, 0, array, 0, len);		
+	}
+	
 }
