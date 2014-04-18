@@ -182,7 +182,7 @@ public class Sort<E extends Comparable<E>>
 	// -------------------------------  Heap Sort ------------------------------
 	// Instead of using a BST-like structure like in quicksort, heapsort
 	// uses the properties of a max heap to efficiently store and remove
-	// the max value (root) after iteration. We use a temp array to make
+	// the max value (root) after each iteration. We use a temp array to make
 	// things cleaner, but it isn't necessary if you choose to implement
 	// it a different way. Heapsort is O(n log n) in the best, average, and
 	// worst case scenarios, but is not as fast as quicksort in the average
