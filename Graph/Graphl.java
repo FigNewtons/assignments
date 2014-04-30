@@ -6,6 +6,10 @@ import java.util.*;
  * 
  * This is an adjacency graph implementation using a hashmap
  * for String vertex labels.
+ * 
+ * @author Daniel Gruszczynski
+ * @date April 10, 2014
+ * @version 1.0
  *
  */
 
@@ -14,6 +18,10 @@ public class Graphl implements Graph
 	private HashMap<String, GraphList> vertex; // Stores strings as keys to linked lists
 	private int numEdges;   // Number of edges 
 	private HashMap<String, Integer> marked; // Stores strings as keys to integer value (1 - visited)
+	
+	// Used for Dijkstra's algorithm
+	private HashMap<String, Integer> distance;
+	private HashMap<String, ArrayList<String>> path;
 	
 	// Used for marking vertices during graph traversal
 	private static final int UNVISITED = 0;
@@ -29,11 +37,16 @@ public class Graphl implements Graph
 		
 		vertex = new HashMap<String, GraphList>(list.length, (float)0.5);
 		marked = new HashMap<String, Integer>(list.length, (float)0.5);
+		distance = new HashMap<String, Integer>(list.length, (float)0.5);
+		path = new HashMap<String, ArrayList<String>>(list.length, (float)0.5);
+		
 		numEdges = 0;
 		
 		for(String s: list){
 			vertex.put(s, new GraphList());
 			marked.put(s, UNVISITED);
+			distance.put(s, Integer.MAX_VALUE);
+			path.put(s, new ArrayList<String>());
 		}
 	}
 	
@@ -79,12 +92,17 @@ public class Graphl implements Graph
 	public void addVertex(String v){
 		vertex.put(v, new GraphList());
 		marked.put(v, UNVISITED);
+		distance.put(v, Integer.MAX_VALUE);		
+		path.put(v, new ArrayList<String>());
 	}
 	
 	// Deletes vertex and its associated edges
 	public void delVertex(String v){
 		if(isVertex(v)){
 	    	vertex.remove(v); // Remove vertex
+	    	marked.remove(v); // Remove marked key-pair
+	    	distance.remove(v); // Same
+	    	path.remove(v);
 	    	
 			Set set = vertex.entrySet();
 			Iterator i = set.iterator();
@@ -198,7 +216,7 @@ public class Graphl implements Graph
 	// Depth-first search
 	public void DFS(String start){	
 		if(isVertex(start)){
-			resetMark();
+			reset(marked, UNVISITED);
 			traverse(start);
 		}
 		
@@ -211,7 +229,7 @@ public class Graphl implements Graph
 		if(!isVertex(start))
 			return;
 		
-		resetMark();
+		reset(marked, UNVISITED);
 		Queue<String> queue = new AQueue<String>(numVertices());
 		
 		queue.enqueue(start);
@@ -235,6 +253,46 @@ public class Graphl implements Graph
 		}
 	}
 
+	// Computes the shortest path from a starting vertex 
+	// using Dijkstra's algorithm (assumes a weighted graph)
+	public void Dijkstra(String start){		
+		
+		// Initialize distance array to "infinity" and reset marks
+		reset(distance, Integer.MAX_VALUE);
+		reset(marked, UNVISITED);
+		
+		// Set start string to distance of zero and set empty path
+		distance.put(start, 0);
+		path.put(start, new ArrayList<String>());
+		
+		
+		// Iterate over the vertices
+		for(int i = 0; i < numVertices(); i++){
+			String v = minVertex(); // Get vertex with min distance
+			marked.put(v, VISITED); // Mark as visited
+			
+			if (start != v)
+				path.get(v).add(v);
+			
+			if(distance.get(v) == Integer.MAX_VALUE)
+				return; // Vertex is unreachable
+			
+			// Update distances and paths
+			GraphList glist = vertex.get(v);
+			for(glist.moveToStart(); glist.currentPos() != glist.length(); glist.next())
+			{
+				String neighbor = glist.getValue().vertex();
+				if(distance.get(neighbor) > (distance.get(v) + weight(v, neighbor)))
+				{
+					distance.put(neighbor, distance.get(v) + weight(v, neighbor));		
+					path.get(neighbor).add(v);
+				}
+			}
+		}
+		
+		printDijkstra(start);
+	}
+
 	// Graph traversal for DFS
 	private void traverse(String start){
 		setMark(start, VISITED);
@@ -245,20 +303,66 @@ public class Graphl implements Graph
 		for(glist.moveToStart(); glist.currentPos() != glist.length(); glist.next())
 		{
 			String s = glist.getValue().vertex();
-			if((int)marked.get(s) == UNVISITED)
+			if((int)marked.get(s) == 0)
 				traverse(s);			
 		}
 		return;
 	}
 	
-	// Mark all vertices as unvisited '0'
-	private void resetMark(){
-		Set set = marked.entrySet();
+	// Resets either marked or distance hash map 
+	// Marked - UNVISITED
+	// Distance - Integer.MAX_VALUE
+	private void reset(HashMap<String, Integer> hash, Integer value){
+		Set set = hash.entrySet();
 		Iterator i = set.iterator();
 	
 		while(i.hasNext()) {
 			Map.Entry me = (Map.Entry)i.next();         
-			setMark((String) me.getKey(), UNVISITED);
+			setMark((String) me.getKey(), value);
 		}
 	}
+	
+	
+	// Returns the next unmarked min vertex
+	private String minVertex(){
+		String v = null;
+		
+		Set set = marked.entrySet();
+		Iterator i = set.iterator();
+		
+		// Set v to any unmarked vertex
+		while(i.hasNext()){
+			Map.Entry<String, Integer> me = (Map.Entry) i.next();
+			
+			if(me.getValue() == UNVISITED)
+				v = me.getKey();
+		}
+		
+		i = set.iterator(); // reset iterator
+		
+		// Now find the smallest distance to an unmarked vertex 
+		while(i.hasNext()){
+			Map.Entry<String, Integer> me = (Map.Entry) i.next();
+			if((me.getValue() == UNVISITED) && (distance.get(me.getKey()) < distance.get(v)))
+				v = me.getKey();
+		}
+		
+		return v;	
+	}
+	
+	// Neatly outputs shortest path table 
+	private void printDijkstra(String start){
+		Set d = distance.entrySet();
+		Iterator i = d.iterator();
+		
+		System.out.println("\nSource\tDest.\tDistance\tShortest Path");
+		while(i.hasNext()){
+			Map.Entry<String, Integer> me = (Map.Entry) i.next();
+			ArrayList<String> temp  = path.get(me.getKey());
+			
+			System.out.println(" " + start + "\t" + me.getKey() + "\t" + 
+							   me.getValue() + "\t\t" + temp.toString());
+		}
+	}
+	
 }

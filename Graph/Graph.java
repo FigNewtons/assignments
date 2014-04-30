@@ -5,6 +5,10 @@
  * This is the graph interface. This interface does not use generics
  * and assumes that vertices are String values. 
  * 
+ * @author Daniel Gruszczynski
+ * @version 1.0
+ * @date April 11, 2014
+ * 
  */
 
 public interface Graph
@@ -40,4 +44,6 @@ public interface Graph
 	public void DFS(String start); // Does a depth-first search beginning at start String
 	
 	public void BFS(String start); // Does a breadth-first search beginning at start String
+	
+	public void Dijkstra(String start); // Computes the shortest path distances from a start String
 }
