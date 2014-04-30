@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Sort<E extends Comparable<E>>
 {
 	public E[] array;
@@ -187,7 +189,7 @@ public class Sort<E extends Comparable<E>>
 	// it a different way. Heapsort is O(n log n) in the best, average, and
 	// worst case scenarios, but is not as fast as quicksort in the average
 	// case (by a constant factor).
-	public void heapsort(E[] temp)
+	public void heapSort(E[] temp)
 	{
 		MaxHeap<E> heap = new MaxHeap<E>(array, len);
 		
@@ -201,4 +203,81 @@ public class Sort<E extends Comparable<E>>
 		System.arraycopy(arr, 0, array, 0, len);		
 	}
 	
+	// --------------------------------  Bin Sort ------------------------------
+	// This sort works optimally in O(n) on key values within a range of 0 
+	// and MaxKey by indexing the values into bins (which are linked lists) 
+	// and then iteratively retrieving them back to make a sorted array. 
+	// In the worst case, this sort runs in 0(n^2) due to the processing 
+	// of each bin's linked list (see the nested for loop) -- this happens when
+	// there's a large disparity between the number of items to sort and the
+	// range the items are within.
+	public void binSort(int MaxKey)
+	{
+		// Make an array of linked lists -- These are the bins 
+		List<Integer>[] bin = new LinkedList[MaxKey + 1];
+		for(int i = 0; i < MaxKey + 1; i++)
+			bin[i] = new LinkedList<Integer>();
+		
+		// Place numbers into their corresponding bins 
+		for(int i = 0; i < len; i++)
+			bin[(Integer)array[i]].append((Integer)array[i]);
+		
+		int index = 0; // used to reorder the original array 
+		
+		// Iterate through the bins and place values back into the array
+		E item; 
+		for(int i = 0; i < MaxKey + 1; i++)
+			for(bin[i].moveToStart(); (item = (E) bin[i].getValue()) != null; bin[i].next())
+				array[index++] = item;
+	}
+	
+	// -------------------------------  Radix Sort -----------------------------
+	// This sort works in O(n) time for key values within a certain base (range)
+	// and whose max value has maxLength digits. We iterate maxLength times,
+	// at each pass sorting the keys based on digit found at the current place-
+	// holder. This is done using the mod operator. We use a count array to be 
+	// able to copy values from the bins back to the original array at the end
+	// of each pass. 
+	public void radixSort(int maxLength, int range)
+	{ 
+		// The bin array is a temp array used to move values
+		// back to the original array after each pass -- the
+		// count array stores the number of values we need to
+		// reserve in the original array to copy the values 
+		// back over
+		
+		// Initialize array list
+		ArrayList<E> bin = new ArrayList<E>(len);
+		for(int i = 0; i < len; i++)
+			bin.add(null);
+		
+		int[] count = new int[range];
+		
+		int i, j, radix;
+		
+		// Iterate from least significant digit towards the right
+		for(i = 0, radix = 1; i < maxLength; i++, radix *= range)
+		{
+			// Reset count values
+			for (j = 0; j < range; j++)
+				count[j] = 0;
+			
+			// Record counts for the values 
+			for (j = 0; j < len; j++)
+				count[((Integer) array[j] / radix) % range]++;
+			
+			// This will be the indices we use to space out the values
+			// correctly
+			for (j = 1; j < range; j++)
+				count[j] = count[j-1] + count[j];
+			
+			// Copy values from array to bins, splitting based on current digit
+			for (j = len - 1; j >= 0; j--)
+				bin.set(--count[((Integer) array[j] / radix) % range], array[j]);
+			
+			// Copy values back into original array
+			for (j = 0; j < len; j++)
+				array[j] = bin.get(j);		
+		}
+	}
 }

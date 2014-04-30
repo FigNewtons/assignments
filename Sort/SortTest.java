@@ -60,7 +60,21 @@ public class SortTest
 	public void heapTest()
 	{
 		Integer[] temp = new Integer[array.length];
-		sort.heapsort(temp);
+		sort.heapSort(temp);
+		assertEquals(correct, sort.getArray());
+	}
+	
+	@Test
+	public void binTest()
+	{
+		sort.binSort(15);
+		assertEquals(correct, sort.getArray());
+	}
+	
+	@Test
+	public void radixText()
+	{
+		sort.radixSort(2, 10);
 		assertEquals(correct, sort.getArray());
 	}
 }
