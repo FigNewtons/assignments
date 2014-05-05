@@ -378,7 +378,7 @@ public class Graphl implements Graph
 					distance = "Inf";	
 
 			System.out.println(" " + start + "\t" + me.getKey() + "\t" + 
-							   me.getValue() + "\t\t" + temp.toString());
+							   distance + "\t\t" + temp.toString());
 		}
 	}
 	
