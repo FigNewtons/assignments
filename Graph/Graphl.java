@@ -270,14 +270,14 @@ public class Graphl implements Graph
 			String v = minVertex(); // Get vertex with min distance
 			marked.put(v, VISITED); // Mark as visited
 			
-			// Add the vertex itself to end of the path list
-			if (start != v)
-				path.get(v).add(v);
-			
 			if(distance.get(v) == Integer.MAX_VALUE){
 				printDijkstra(start);
 				return; // Vertex is unreachable
 			}
+
+			// Add the vertex itself to end of the path list
+			if (start != v)
+				path.get(v).add(v);
 
 			// Update distances and paths
 			GraphList glist = vertex.get(v);
@@ -287,7 +287,15 @@ public class Graphl implements Graph
 				if(distance.get(neighbor) > (distance.get(v) + weight(v, neighbor)))
 				{
 					distance.put(neighbor, distance.get(v) + weight(v, neighbor));		
-					path.get(neighbor).add(v);
+					
+					ArrayList<String> nPath = path.get(neighbor);
+					for(int s = 0; s < path.get(v).size(); s++){
+						if(nPath.size() > s)						
+							nPath.set(s, path.get(v).get(s));	
+						else
+							nPath.add(path.get(v).get(s));						
+					}
+					nPath.add(v);
 				}
 			}
 		}
