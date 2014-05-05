@@ -274,9 +274,11 @@ public class Graphl implements Graph
 			if (start != v)
 				path.get(v).add(v);
 			
-			if(distance.get(v) == Integer.MAX_VALUE)
+			if(distance.get(v) == Integer.MAX_VALUE){
+				printDijkstra(start);
 				return; // Vertex is unreachable
-			
+			}
+
 			// Update distances and paths
 			GraphList glist = vertex.get(v);
 			for(glist.moveToStart(); glist.currentPos() != glist.length(); glist.next())
@@ -374,7 +376,7 @@ public class Graphl implements Graph
 			String distance = me.getValue().toString();
 
 			// Unreachable path		
-			if((me.getValue() == 0) && (!me.getKey().equals(start)))
+			if((me.getValue() == Integer.MAX_VALUE) && (!me.getKey().equals(start)))
 					distance = "Inf";	
 
 			System.out.println(" " + start + "\t" + me.getKey() + "\t" + 
