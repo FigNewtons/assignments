@@ -329,7 +329,7 @@ public class Graphl implements Graph
 	
 		while(i.hasNext()) {
 			Map.Entry me = (Map.Entry)i.next();         
-			setMark((String) me.getKey(), value);
+			hash.set((String) me.getKey(), value);
 		}
 	}
 	
