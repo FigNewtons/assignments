@@ -257,20 +257,20 @@ public class Graphl implements Graph
 	// using Dijkstra's algorithm (assumes a weighted graph)
 	public void Dijkstra(String start){		
 		
-		// Initialize distance array to "infinity" and reset marks
+		// Initialize distance array to "infinity", and reset marks and paths
 		reset(distance, Integer.MAX_VALUE);
 		reset(marked, UNVISITED);
+		reset(path);
 		
-		// Set start string to distance of zero and set empty path
+		// Set start string to distance of zero 
 		distance.put(start, 0);
-		path.put(start, new ArrayList<String>());
-		
-		
+	
 		// Iterate over the vertices
 		for(int i = 0; i < numVertices(); i++){
 			String v = minVertex(); // Get vertex with min distance
 			marked.put(v, VISITED); // Mark as visited
 			
+			// Add the vertex itself to end of the path list
 			if (start != v)
 				path.get(v).add(v);
 			
@@ -309,6 +309,17 @@ public class Graphl implements Graph
 		return;
 	}
 	
+	// Resets paths for Dijkstra's algorithm 
+	private void reset(HashMap<String, ArrayList<String>> hash){
+ 		Set set = hash.entrySet();
+		Iterator i = set.iterator();
+	
+		while(i.hasNext()) {
+			Map.Entry me = (Map.Entry)i.next();         
+			me.setValue(new ArrayList<String>());
+		}
+	}
+
 	// Resets either marked or distance hash map 
 	// Marked - UNVISITED
 	// Distance - Integer.MAX_VALUE
@@ -360,6 +371,12 @@ public class Graphl implements Graph
 			Map.Entry<String, Integer> me = (Map.Entry) i.next();
 			ArrayList<String> temp  = path.get(me.getKey());
 			
+			String distance = me.getValue().toString();
+
+			// Unreachable path		
+			if((me.getValue() == 0) && (!me.getKey().equals(start)))
+					distance = "Inf";	
+
 			System.out.println(" " + start + "\t" + me.getKey() + "\t" + 
 							   me.getValue() + "\t\t" + temp.toString());
 		}
